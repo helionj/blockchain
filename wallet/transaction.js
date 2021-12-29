@@ -7,6 +7,7 @@ class Transaction{
         this.outputs = [];
     }
 
+
     update(senderWallet, recipient, amount){
         const senderOutput = this.outputs.find(output => output.address === senderWallet.publicKey);
         if(amount > senderOutput.balance){
