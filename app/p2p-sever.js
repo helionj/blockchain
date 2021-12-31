@@ -4,7 +4,8 @@ const peers = process.env.PEERS ? process.env.PEERS.split(','):[];
 
 const MESSAGES_TYPES = { 
     chain: 'CHAIN',
-    transaction: 'TRANSACTION'
+    transaction: 'TRANSACTION',
+    clear_transactions: 'CLEAR_TRANSACTIONS'
 }
 
 class P2pServer{
@@ -49,7 +50,9 @@ class P2pServer{
                 case MESSAGES_TYPES.transaction:
                     this.transactionPool.updateOrAddTransaction(data.transaction);
                     break;
-
+                case MESSAGES_TYPES.clear_transactions:
+                    this.transactionPool.clear();
+                    break;
             }
             
         })
@@ -81,6 +84,12 @@ class P2pServer{
         this.socktes.forEach(socket => {
             this.sendTransaction(socket, transaction);
         })
+    }
+
+    broadcastClearTransactions(){
+        this.socktes.forEach(socket => socket.send(JSON.stringify(
+            {type: MESSAGES_TYPES.clear_transactions}
+            )));
     }
 }
 
